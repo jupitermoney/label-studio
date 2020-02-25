@@ -23,15 +23,9 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1.0.1
         with:
           registries: ${{ env.DEV_REGISTRY }}
-      - uses: actions/cache@v1
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
       - name: Build, tag, and push image to Amazon ECR
         run: |
-          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_REF_SLUG-$GITHUB_SHA_SHORT
+          docker build $ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_REF_SLUG-$GITHUB_SHA_SHORT
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_REF_SLUG-$GITHUB_SHA_SHORT
 #      - name: Additional tag for develop branch
 #        if: github.ref == 'refs/heads/develop'
